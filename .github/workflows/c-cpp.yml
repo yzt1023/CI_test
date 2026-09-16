@@ -1,19 +1,34 @@
 name: C/C++ CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: make
-      run: g++ main.cpp -o main
-    - name: run
-      run: ./main
+    
+    - name: Install dependencies
+      run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy bear
+          
+    - name: Build
+      run: |
+          bear -- g++ main.cpp -o main
+      
+    - name: Run clang-tidy
+      uses: ZedThree/clang-tidy-review@v0.23.1
+      id: clang-tidy
+      with:
+          build_dir: .
+          annotations: false
+          num_comments_as_exitcode: true
