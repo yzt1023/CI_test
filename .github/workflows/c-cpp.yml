@@ -21,6 +21,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang clang-tools
 
+      - name: Check Clang tools
+        run: |
+          clang++ --version
+          scan-build --version
+
       - name: Build and analyze
         run: |
           mkdir -p results
@@ -28,7 +33,11 @@ jobs:
           scan-build \
             -sarif \
             -o results \
-            g++ main.cpp -o main
+            clang++ main.cpp -o main
+
+      - name: Show analyzer results
+        run: |
+          find results -type f -print
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v4
