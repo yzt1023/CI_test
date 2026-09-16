@@ -21,11 +21,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang clang-tools
 
-      - name: Check Clang tools
-        run: |
-          clang++ --version
-          scan-build --version
-
       - name: Build and analyze
         run: |
           mkdir -p results
