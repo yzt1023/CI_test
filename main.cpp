@@ -3,6 +3,7 @@
 int test() {
     int *p = nullptr;
     *p = 10;
+	return 0;
 }
 
 int main() {
