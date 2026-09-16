@@ -1,30 +1,37 @@
-name: C/C++ CI
+name: C/C++ Static Analysis
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
-  build:
-
+  static-analysis:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install dependencies
-      run: |
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
           sudo apt-get update
-          sudo apt-get install -y clang-tidy bear
-          
-    - name: Build
-      run: |
-          bear -- g++ main.cpp -o main
-      
-    - name: Run clang-tidy
-      uses: ZedThree/clang-tidy-review@v0.23.1
-      id: clang-tidy
-      with:
-          build_dir: .
-          annotations: true
-          num_comments_as_exitcode: true
+          sudo apt-get install -y clang
+
+      - name: Build and analyze
+        run: |
+          mkdir -p results
+
+          scan-build \
+            -sarif \
+            -o results \
+            g++ main.cpp -o main
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results
+          category: clang-static-analyzer
