@@ -9,7 +9,7 @@ permissions:
   security-events: write
 
 jobs:
-  static-analysis:
+  build:
     runs-on: ubuntu-latest
 
     steps:
