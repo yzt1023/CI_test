@@ -1,6 +1,5 @@
-#include <iostream>
-
 int main() {
-    std::cout << "hello world" << std::endl;
-    std::cout << "test PR" << std::endl;
+    int *p = nullptr;
+    *p = 10;
+	return 0;
 }
